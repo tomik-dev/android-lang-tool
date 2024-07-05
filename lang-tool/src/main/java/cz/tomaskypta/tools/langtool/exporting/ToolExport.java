@@ -67,14 +67,21 @@ public class ToolExport {
             System.err.println("Cannot find resource directory.");
             return;
         }
+
+        // Process default language first to populate keysIndex
+        // keysIndex is used to keep track of missing keys
+        for (File dir : res.listFiles()) {
+            if (!dir.isDirectory() || !dir.getName().equals(DIR_VALUES)) {
+                continue;
+            }
+            keysIndex = exportDefLang(dir);
+        }
         for (File dir : res.listFiles()) {
             if (!dir.isDirectory() || !dir.getName().startsWith(DIR_VALUES)) {
                 continue;
             }
             String dirName = dir.getName();
-            if (dirName.equals(DIR_VALUES)) {
-                keysIndex = exportDefLang(dir);
-            } else {
+            if (!dirName.equals(DIR_VALUES)) {
                 int index = dirName.indexOf('-');
                 if (index == -1)
                     continue;
